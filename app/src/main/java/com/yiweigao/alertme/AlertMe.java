@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -16,6 +18,7 @@ public class AlertMe extends ActionBarActivity {
     private static final short SETTINGS_INFO = 1;   // used for startActivityForResult()
 
     private TextView alarmCountdownText;
+    private Button startAlarmButton;
 
 
     @Override
@@ -25,6 +28,18 @@ public class AlertMe extends ActionBarActivity {
 
         alarmCountdownText = (TextView) findViewById(R.id.alarm_countdown_text);
         alarmCountdownText.setText("Not initialized yet");
+
+        startAlarmButton = (Button) findViewById(R.id.start_alarm_button);
+        updateAlarmCountdown();
+
+        final Alarm newAlarm = new Alarm(this, alarmCountdownValue);
+
+        startAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newAlarm.startCountdown();
+            }
+        });
     }
 
 
