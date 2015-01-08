@@ -28,10 +28,10 @@ public class Alarm {
                 countdownDisplay.setText(Long.toString(millisUntilFinished / 1000));
             }
 
-            @Override
-            public void onFinish() {
-                countdownDisplay.setText("done");
-            }
+//            @Override
+//            public void onFinish() {
+//                countdownDisplay.setText("done");
+//            }
         }.start();
 
     }
