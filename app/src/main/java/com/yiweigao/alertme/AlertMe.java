@@ -1,18 +1,30 @@
 package com.yiweigao.alertme;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 
 public class AlertMe extends ActionBarActivity {
+
+    private byte alarmCountdownValue;    // max value 127
+    private static final short SETTINGS_INFO = 1;   // used for startActivityForResult()
+
+    private TextView alarmCountdownText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert_me);
+
+        alarmCountdownText = (TextView) findViewById(R.id.alarm_countdown_text);
+        alarmCountdownText.setText("Not initialized yet");
     }
 
 
@@ -35,11 +47,32 @@ public class AlertMe extends ActionBarActivity {
 
             Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
 
-            startActivity(intent);
+            startActivityForResult(intent, SETTINGS_INFO);
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SETTINGS_INFO) {
+            updateAlarmCountdown();
+        }
+    }
+
+    private void updateAlarmCountdown() {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String alarmCountdownSetting = sharedPreferences.getString("alarm_set_countdown", "5");
+
+        alarmCountdownValue = Byte.parseByte(alarmCountdownSetting);
+
+        alarmCountdownText.setText(alarmCountdownSetting);
+
     }
 }
