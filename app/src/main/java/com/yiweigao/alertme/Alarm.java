@@ -10,6 +10,7 @@ import android.widget.TextView;
 public class Alarm {
 
     private byte countdown;
+    private int secondsLeft = 0;
     private TextView countdownDisplay;
     private Activity activity;
 
@@ -21,13 +22,27 @@ public class Alarm {
 
     public void startCountdown() {
 
-        new CountDownTimer(countdown * 1000, 1000) {
-
+        // countdown fix from
+        // http://stackoverflow.com/a/6811744/1470257
+        new CountDownTimer(countdown * 1000, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
-                countdownDisplay.setText(Long.toString(millisUntilFinished / 1000));
+                if (Math.round((float) millisUntilFinished / 1000.0f) != secondsLeft) {
+                    secondsLeft = Math.round((int) millisUntilFinished / 1000.0f);
+                    countdownDisplay.setText(Integer.toString(secondsLeft));
+                }
             }
 
+            @Override
+            public void onFinish() {
+                countdownDisplay.setText("done");
+            }
+
+            //            @Override
+//            public void onTick(long millisUntilFinished) {
+//                countdownDisplay.setText(Long.toString(millisUntilFinished / 1000));
+//            }
+//
 //            @Override
 //            public void onFinish() {
 //                countdownDisplay.setText("done");
