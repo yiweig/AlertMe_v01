@@ -19,7 +19,7 @@ public class Alarm {
         this.countdownDisplay = (TextView) this.activity.findViewById(R.id.alarm_countdown_text);
     }
 
-    private void startCountdown() {
+    public void startCountdown() {
 
         new CountDownTimer(countdown * 1000, 1000) {
 
