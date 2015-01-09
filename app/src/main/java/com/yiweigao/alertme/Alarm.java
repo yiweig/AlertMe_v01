@@ -46,10 +46,7 @@ public class Alarm {
             public void onFinish() {
                 countdownDisplay.setText("done");
 
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
-                        audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-
-                mediaPlayer.start();
+                playAlarm();
 
 //                try {
 //                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -77,6 +74,19 @@ public class Alarm {
     public void setTime(byte newTime) {
         this.countdown = newTime;
         this.countdownDisplay.setText(Byte.toString(this.countdown));
+    }
+
+    public void playAlarm() {
+
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+
+        mediaPlayer.start();
+
+    }
+
+    public void stopAlarm() {
+        mediaPlayer.stop();
     }
 
 

@@ -19,6 +19,7 @@ public class AlertMe extends ActionBarActivity {
 
     private TextView alarmCountdownText;
     private Button startAlarmButton;
+    private Button resetButton;
 
     private Alarm theAlarm;
 
@@ -32,6 +33,7 @@ public class AlertMe extends ActionBarActivity {
         alarmCountdownText.setText("Not initialized yet");
 
         startAlarmButton = (Button) findViewById(R.id.start_alarm_button);
+        resetButton = (Button) findViewById(R.id.reset_button);
 
         theAlarm = new Alarm(this, alarmCountdownValue);
         updateAlarmCountdown();
@@ -40,6 +42,14 @@ public class AlertMe extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 theAlarm.startCountdown();
+            }
+        });
+
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                theAlarm.stopAlarm();
+                updateAlarmCountdown();
             }
         });
     }
