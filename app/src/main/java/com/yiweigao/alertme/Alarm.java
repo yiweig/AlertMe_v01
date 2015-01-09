@@ -1,11 +1,15 @@
 package com.yiweigao.alertme;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.widget.TextView;
+
+import java.io.IOException;
 
 /**
  * Created by yiweigao on 1/8/15.
@@ -24,6 +28,18 @@ public class Alarm {
     private MotionDetector motionDetector;
     private CountDownTimer countdownTimer;
     private CountDownTimer timeoutTimer;
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean message = intent.getBooleanExtra("hasMotion", false);
+
+            if (message) {
+                startAlarm();
+                countdownDisplay.setText("triggered");
+            }
+        }
+    };
 
     public Alarm(Activity mainActivity, int passedCountdown) {
         this.activity = mainActivity;
@@ -105,8 +121,13 @@ public class Alarm {
     }
 
     public void stopAlarm() {
-        mediaPlayer.pause();
-        mediaPlayer.seekTo(0);
+        mediaPlayer.stop();
+        try {
+            mediaPlayer.prepare();
+            mediaPlayer.seekTo(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
     }
 
@@ -126,5 +147,7 @@ public class Alarm {
         motionDetector.unregister();
     }
 
-
+    public BroadcastReceiver getBroadcastReceiver() {
+        return broadcastReceiver;
+    }
 }

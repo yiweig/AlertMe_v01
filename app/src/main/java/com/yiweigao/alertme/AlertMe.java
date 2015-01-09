@@ -1,7 +1,5 @@
 package com.yiweigao.alertme;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -30,16 +28,17 @@ public class AlertMe extends ActionBarActivity {
 
     private MotionDetector motionDetector;
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean message = intent.getBooleanExtra("hasMotion", false);
-
-            if (message) {
-                theAlarm.startAlarm();
-            }
-        }
-    };
+//    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            boolean message = intent.getBooleanExtra("hasMotion", false);
+//
+//            if (message) {
+//                theAlarm.startAlarm();
+//                alarmCountdownText.setText("triggered");
+//            }
+//        }
+//    };
 
 
     @Override
@@ -80,7 +79,7 @@ public class AlertMe extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         theAlarm.registerSensorListener();
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
+        LocalBroadcastManager.getInstance(this).registerReceiver(theAlarm.getBroadcastReceiver(),
                 new IntentFilter("motionDetected"));
     }
 
@@ -88,7 +87,7 @@ public class AlertMe extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         theAlarm.unregisterSensorListener();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(theAlarm.getBroadcastReceiver());
     }
 
 
