@@ -23,6 +23,8 @@ public class AlertMe extends ActionBarActivity {
 
     private Alarm theAlarm;
 
+    private MotionDetector motionDetector;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class AlertMe extends ActionBarActivity {
 
         theAlarm = new Alarm(this, alarmCountdownValue);
         updateAlarmCountdown();
+
+        motionDetector = new MotionDetector(this);
 
         startAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +57,21 @@ public class AlertMe extends ActionBarActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        motionDetector.register();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        motionDetector.unregister();
+
+    }
+
 
 
     @Override
