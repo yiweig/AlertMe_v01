@@ -17,12 +17,14 @@ public class MotionDetector implements SensorEventListener {
 
 //    private Activity activity;
 
-    private Context mainContext;
+    final float ALPHA = 0.8f;
 
+    private Context mainContext;
     private SensorManager sensorManager;
+
     private Sensor accSensor;
 
-    final float ALPHA = 0.8f;
+    private float threshold;
 
     private boolean isOn;
     private boolean isCalibrating;
@@ -45,6 +47,8 @@ public class MotionDetector implements SensorEventListener {
 
         this.gravity = new float[3];
         this.linear_acceleration = new float[3];
+
+        this.threshold = 0.3f;
     }
 
     public void turnOn() {
@@ -109,7 +113,7 @@ public class MotionDetector implements SensorEventListener {
                                                 linear_acceleration[2] * linear_acceleration[2]);
             Log.d("->", Float.toString(currentAccel));
 
-            if (isOn && currentAccel > 0.3f) {
+            if (isOn && currentAccel > threshold) {
                 Intent intent = new Intent("motionDetected");
                 intent.putExtra("hasMotion", true);
                 LocalBroadcastManager.getInstance(mainContext).sendBroadcast(intent);
