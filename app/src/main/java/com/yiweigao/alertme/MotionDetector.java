@@ -23,7 +23,7 @@ public class MotionDetector implements SensorEventListener {
 
 //    private float[] accValues;
 //    private float[] gyroValues;
-    private float tolerance;
+    final float TOLERANCE = 0.8f;
     private float xNoise;
     private float yNoise;
     private float zNoise;
@@ -53,7 +53,6 @@ public class MotionDetector implements SensorEventListener {
 //            hasGyro = true;
 //        }
 
-        this.tolerance = 2.0f;
         this.xNoise = 0.0f;
         this.yNoise = 0.0f;
         this.zNoise = 0.0f;
@@ -82,13 +81,19 @@ public class MotionDetector implements SensorEventListener {
         isCalibrating = false;
     }
 
-    private void calibrate(float x, float y, float z) {
+    private void calibrate(SensorEvent event) {
+        // TOLERANCE is calculated as t / (t + dT)
+        // with t, the low-pass filter's time-constant
+        // and dT, the event delivery rate
+        // default = 0.8f
 
-        numberOfSamples++;
+        gravity[0] = TOLERANCE * gravity[0] + (1 - TOLERANCE) * event.values[0];
+        gravity[1] = TOLERANCE * gravity[1] + (1 - TOLERANCE) * event.values[1];
+        gravity[2] = TOLERANCE * gravity[2] + (1 - TOLERANCE) * event.values[2];
 
-        xNoise = (xNoise + x) / numberOfSamples;
-        yNoise = (yNoise + y) / numberOfSamples;
-        zNoise = (zNoise + z) / numberOfSamples;
+//        Log.d("calibration", Float.toString(gravity[0]) + " | " +
+//                             Float.toString(gravity[1]) + " | " +
+//                             Float.toString(gravity[2]));
 
     }
 
@@ -97,28 +102,14 @@ public class MotionDetector implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
-//            float x = event.values[0];
-//            float y = event.values[1];
-//            float z = event.values[2];
-
-            // alpha is calculated as t / (t + dT)
-            // with t, the low-pass filter's time-constant
-            // and dT, the event delivery rate
-
-            final float alpha = 0.8f;
-
-            gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
-            gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
-            gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+            if (isCalibrating == true) {
+                calibrate(event);
+                return;
+            }
 
             linear_acceleration[0] = event.values[0] - gravity[0];
             linear_acceleration[1] = event.values[1] - gravity[1];
             linear_acceleration[2] = event.values[2] - gravity[2];
-
-            if (isCalibrating == true) {
-//                calibrate(x, y, z);
-                return;
-            }
 
 //            calibrate(x, y, z);
 //            Toast.makeText(this, "Accelerometer has detected movement!", Toast.LENGTH_SHORT).show();
@@ -144,7 +135,7 @@ public class MotionDetector implements SensorEventListener {
 //                    ", " + Float.toString(linear_acceleration[1]) + ", " + Float.toString(linear_acceleration[2]) + "}");
 
 
-//            if (currentAccel > tolerance) {
+//            if (currentAccel > TOLERANCE) {
 //                Intent intent = new Intent("motionDetected");
 //                intent.putExtra("hasMotion", "true");
 //                LocalBroadcastManager.getInstance(mainContext).sendBroadcast(intent);

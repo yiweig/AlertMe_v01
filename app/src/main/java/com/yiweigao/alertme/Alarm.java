@@ -33,6 +33,8 @@ public class Alarm {
 
     public void startCountdown() {
 
+        motionDetector.startCalibration();
+
         // countdown fix from
         // http://stackoverflow.com/a/6811744/1470257
         new CountDownTimer(countdown * 1000, 100) {
@@ -46,29 +48,9 @@ public class Alarm {
 
             @Override
             public void onFinish() {
-                countdownDisplay.setText("done");
-
-                startAlarm();
-
-//                try {
-//                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//                    Ringtone r = RingtoneManager.getRingtone(activity.getApplicationContext(), notification);
-//                    r.play();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-
+                motionDetector.stopCalibration();
+                countdownDisplay.setText("set");
             }
-
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//                countdownDisplay.setText(Long.toString(millisUntilFinished / 1000));
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//                countdownDisplay.setText("done");
-//            }
         }.start();
 
     }
