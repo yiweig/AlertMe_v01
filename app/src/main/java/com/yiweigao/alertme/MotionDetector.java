@@ -1,10 +1,12 @@
 package com.yiweigao.alertme;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.FloatMath;
 import android.util.Log;
 
@@ -23,14 +25,14 @@ public class MotionDetector implements SensorEventListener {
 
 //    private float[] accValues;
 //    private float[] gyroValues;
-    final float TOLERANCE = 0.8f;
+    final float ALPHA = 0.8f;
     private float xNoise;
     private float yNoise;
     private float zNoise;
     private short numberOfSamples;  // maybe this can be a byte if we don't anticipate more than 127 samples?
 
+    private boolean isOn;
     private boolean isCalibrating;
-
     private boolean hasAcc;
 //    private boolean hasGyro = false;
 
@@ -44,6 +46,7 @@ public class MotionDetector implements SensorEventListener {
         this.accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 //        gyroSensor= sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
+        this.isOn = false;
         this.isCalibrating = false;
         this.hasAcc = false;
         if (this.accSensor != null) {
@@ -64,6 +67,14 @@ public class MotionDetector implements SensorEventListener {
 
     }
 
+    public void turnOn() {
+        isOn = true;
+    }
+
+    public void turnOff() {
+        isOn = false;
+    }
+
     public void register() {
         sensorManager.registerListener(this, accSensor, SensorManager.SENSOR_DELAY_NORMAL);
 //        sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -82,14 +93,14 @@ public class MotionDetector implements SensorEventListener {
     }
 
     private void calibrate(SensorEvent event) {
-        // TOLERANCE is calculated as t / (t + dT)
+        // ALPHA is calculated as t / (t + dT)
         // with t, the low-pass filter's time-constant
         // and dT, the event delivery rate
         // default = 0.8f
 
-        gravity[0] = TOLERANCE * gravity[0] + (1 - TOLERANCE) * event.values[0];
-        gravity[1] = TOLERANCE * gravity[1] + (1 - TOLERANCE) * event.values[1];
-        gravity[2] = TOLERANCE * gravity[2] + (1 - TOLERANCE) * event.values[2];
+        gravity[0] = ALPHA * gravity[0] + (1 - ALPHA) * event.values[0];
+        gravity[1] = ALPHA * gravity[1] + (1 - ALPHA) * event.values[1];
+        gravity[2] = ALPHA * gravity[2] + (1 - ALPHA) * event.values[2];
 
 //        Log.d("calibration", Float.toString(gravity[0]) + " | " +
 //                             Float.toString(gravity[1]) + " | " +
@@ -107,26 +118,25 @@ public class MotionDetector implements SensorEventListener {
                 return;
             }
 
+//            float[] linear_acceleration = new float[3];
+
             linear_acceleration[0] = event.values[0] - gravity[0];
             linear_acceleration[1] = event.values[1] - gravity[1];
             linear_acceleration[2] = event.values[2] - gravity[2];
-
-//            calibrate(x, y, z);
-//            Toast.makeText(this, "Accelerometer has detected movement!", Toast.LENGTH_SHORT).show();
-
-//            accValues = event.values.clone();
-
-//            Log.d("onSensonChanged()", "\n" + Float.toString(x) + "\t" + Float.toString(y) + "\t" + Float.toString(z));
-
-//            x -= xNoise;
-//            y -= xNoise;
-//            z -= zNoise;
 
 //            float currentAccel = FloatMath.sqrt(x * x + y * y + z * z);
             float currentAccel = FloatMath.sqrt(linear_acceleration[0] * linear_acceleration[0] +
                                                 linear_acceleration[1] * linear_acceleration[1] +
                                                 linear_acceleration[2] * linear_acceleration[2]);
             Log.d("->", Float.toString(currentAccel));
+
+            if (isOn && currentAccel > 0.3f) {
+                Intent intent = new Intent("motionDetected");
+                intent.putExtra("hasMotion", true);
+                LocalBroadcastManager.getInstance(mainContext).sendBroadcast(intent);
+                sensorManager.unregisterListener(this);
+                isOn = false;
+            }
 //            mAccel = (mAccel * 0.9f) + (mAccelCurrent * 0.1f);
 //            Log.d("->", Float.toString(currentAccel) + " {" + Float.toString(x) +
 //                    ", " + Float.toString(y) + ", " + Float.toString(z) + "}");
@@ -134,8 +144,7 @@ public class MotionDetector implements SensorEventListener {
 //            Log.d("->", " {" + Float.toString(linear_acceleration[0]) +
 //                    ", " + Float.toString(linear_acceleration[1]) + ", " + Float.toString(linear_acceleration[2]) + "}");
 
-
-//            if (currentAccel > TOLERANCE) {
+//            if (currentAccel > ALPHA) {
 //                Intent intent = new Intent("motionDetected");
 //                intent.putExtra("hasMotion", "true");
 //                LocalBroadcastManager.getInstance(mainContext).sendBroadcast(intent);

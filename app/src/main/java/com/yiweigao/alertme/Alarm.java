@@ -50,6 +50,7 @@ public class Alarm {
             public void onFinish() {
                 motionDetector.stopCalibration();
                 countdownDisplay.setText("set");
+                motionDetector.turnOn();
             }
         }.start();
 

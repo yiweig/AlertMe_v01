@@ -32,9 +32,9 @@ public class AlertMe extends ActionBarActivity {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("hasMotion");
+            boolean message = intent.getBooleanExtra("hasMotion", false);
 
-            if (message.equals("true")) {
+            if (message == true) {
                 theAlarm.startAlarm();
             }
         }
