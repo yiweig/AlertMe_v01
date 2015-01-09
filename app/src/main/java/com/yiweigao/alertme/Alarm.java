@@ -89,6 +89,7 @@ public class Alarm {
 
     public void stopAlarm() {
         mediaPlayer.stop();
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
     }
 
     public void registerSensorListener() {

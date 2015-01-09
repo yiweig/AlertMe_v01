@@ -72,8 +72,6 @@ public class AlertMe extends ActionBarActivity {
             }
         });
 
-
-
     }
 
     @Override
