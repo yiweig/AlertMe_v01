@@ -18,7 +18,8 @@ import android.widget.TextView;
 
 public class AlertMe extends ActionBarActivity {
 
-    private byte alarmCountdownValue;    // max value 127
+    private int alarmCountdownValue;
+    private int alarmTimeoutValue;
     private static final short SETTINGS_INFO = 1;   // used for startActivityForResult()
 
     private TextView alarmCountdownText;
@@ -34,7 +35,7 @@ public class AlertMe extends ActionBarActivity {
         public void onReceive(Context context, Intent intent) {
             boolean message = intent.getBooleanExtra("hasMotion", false);
 
-            if (message == true) {
+            if (message) {
                 theAlarm.startAlarm();
             }
         }
@@ -133,12 +134,15 @@ public class AlertMe extends ActionBarActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         String alarmCountdownSetting = sharedPreferences.getString("alarm_set_countdown", "5");
+        String alarmTimeoutSetting = sharedPreferences.getString("alarm_timeout", "0");
 
-        alarmCountdownValue = Byte.parseByte(alarmCountdownSetting);
+        alarmCountdownValue = Integer.parseInt(alarmCountdownSetting);
+        alarmTimeoutValue = Integer.parseInt(alarmTimeoutSetting);
 
         alarmCountdownText.setText(alarmCountdownSetting);
 
-        theAlarm.setTime(alarmCountdownValue);
+        theAlarm.setCountdown(alarmCountdownValue);
+        theAlarm.setTimeout(alarmTimeoutValue);
 
 
     }

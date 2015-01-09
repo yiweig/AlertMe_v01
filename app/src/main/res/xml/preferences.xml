@@ -9,4 +9,12 @@
         android:entryValues="@array/alarm_set_countdown_values"
         android:defaultValue="5"/>
 
+    <ListPreference
+        android:key="alarm_timeout"
+        android:title="Alarm Timeout"
+        android:summary="Timeout after motion detected before alarm sounds"
+        android:entries="@array/alarm_timeout_entries"
+        android:entryValues="@array/alarm_timeout_values"
+        android:defaultValue="0" />
+
 </PreferenceScreen>
