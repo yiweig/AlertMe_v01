@@ -34,6 +34,7 @@ public class AlertMe extends ActionBarActivity {
         startAlarmButton = (Button) findViewById(R.id.start_alarm_button);
 
         theAlarm = new Alarm(this, alarmCountdownValue);
+        updateAlarmCountdown();
 
         startAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
