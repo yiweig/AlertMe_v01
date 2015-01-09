@@ -105,7 +105,8 @@ public class Alarm {
     }
 
     public void stopAlarm() {
-        mediaPlayer.stop();
+        mediaPlayer.pause();
+        mediaPlayer.seekTo(0);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
     }
 
