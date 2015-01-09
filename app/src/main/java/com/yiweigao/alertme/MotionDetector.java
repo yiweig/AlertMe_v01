@@ -79,6 +79,7 @@ public class MotionDetector implements SensorEventListener {
                 Intent intent = new Intent("motionDetected");
                 intent.putExtra("hasMotion", "true");
                 LocalBroadcastManager.getInstance(mainContext).sendBroadcast(intent);
+                sensorManager.unregisterListener(this);
             }
 
             // Shake detection
