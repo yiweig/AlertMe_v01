@@ -1,9 +1,9 @@
 package com.yiweigao.alertme;
 
 import android.app.Activity;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.widget.TextView;
 
@@ -14,13 +14,19 @@ public class Alarm {
 
     private byte countdown;
     private int secondsLeft = 0;
+    private int originalVolume;
     private TextView countdownDisplay;
     private Activity activity;
+    private AudioManager audioManager;
+    private MediaPlayer mediaPlayer;
 
     public Alarm(Activity mainActivity, byte passedCountdown) {
         this.activity = mainActivity;
         this.countdown = passedCountdown;
         this.countdownDisplay = (TextView) this.activity.findViewById(R.id.alarm_countdown_text);
+        this.audioManager = (AudioManager) this.activity.getSystemService(Context.AUDIO_SERVICE);
+        this.originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        this.mediaPlayer = MediaPlayer.create(this.activity, R.raw.some_nights_fun);
     }
 
     public void startCountdown() {
@@ -40,17 +46,22 @@ public class Alarm {
             public void onFinish() {
                 countdownDisplay.setText("done");
 
-                try {
-                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    Ringtone r = RingtoneManager.getRingtone(activity.getApplicationContext(), notification);
-                    r.play();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                        audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+
+                mediaPlayer.start();
+
+//                try {
+//                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                    Ringtone r = RingtoneManager.getRingtone(activity.getApplicationContext(), notification);
+//                    r.play();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
 
             }
 
-            //            @Override
+//            @Override
 //            public void onTick(long millisUntilFinished) {
 //                countdownDisplay.setText(Long.toString(millisUntilFinished / 1000));
 //            }
