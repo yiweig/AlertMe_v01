@@ -24,31 +24,24 @@ public class MotionDetector implements SensorEventListener {
 
     private Sensor accSensor;
 
-    private float threshold;
+    private float threshold = 2.0f;
 
-    private boolean isOn;
-    private boolean isCalibrating;
-    private boolean hasAcc;
+    private boolean isOn = false;
+    private boolean isCalibrating = false;
+    private boolean hasAcc = false;
 
-    private float[] gravity;
-    private float[] linear_acceleration;
+    private float[] gravity = new float[3];
+    private float[] linear_acceleration = new float[3];;
 
     public MotionDetector(Context context) {
         this.mainContext = context;
         this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        this.isOn = false;
-        this.isCalibrating = false;
-        this.hasAcc = false;
         if (this.accSensor != null) {
             this.hasAcc = true;
         }
 
-        this.gravity = new float[3];
-        this.linear_acceleration = new float[3];
-
-        this.threshold = 0.3f;
     }
 
     public void turnOn() {

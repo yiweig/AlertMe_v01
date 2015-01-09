@@ -17,10 +17,10 @@ import java.io.IOException;
 public class Alarm {
 
     private int countdown;
-    private int timeout;
+    private int timeout = 0;
     private int originalVolume;
-    private int countdownSecondsLeft;
-    private int timeoutSecondsLeft;
+    private int countdownSecondsLeft = 0;
+    private int timeoutSecondsLeft = 0;
     private TextView countdownDisplay;
     private Activity activity;
     private AudioManager audioManager;
@@ -49,9 +49,6 @@ public class Alarm {
         this.originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         this.mediaPlayer = MediaPlayer.create(mainActivity, R.raw.some_nights_fun);
         this.motionDetector = new MotionDetector(mainActivity.getApplicationContext());
-        this.timeout = 0;
-        this.countdownSecondsLeft = 0;
-        this.timeoutSecondsLeft = 0;
     }
 
     public void startCountdown() {
@@ -133,6 +130,7 @@ public class Alarm {
 
     public void stopCountdown() {
         countdownTimer.cancel();
+        countdownDisplay.setText("canceled");
     }
 
     public void stopTimeout() {

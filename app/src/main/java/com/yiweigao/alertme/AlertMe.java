@@ -60,7 +60,12 @@ public class AlertMe extends ActionBarActivity {
         startAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                theAlarm.startCountdown();
+                if (startAlarmButton.getText().toString().equals(getString(R.string.start_alarm_button_text))) {
+                    theAlarm.startCountdown();
+                    startAlarmButton.setText(R.string.cancel_alarm_button_text);
+                } else {
+                    theAlarm.stopCountdown();
+                }
             }
         });
 
@@ -70,6 +75,7 @@ public class AlertMe extends ActionBarActivity {
                 theAlarm.stopAlarm();
                 theAlarm.registerSensorListener();
                 updateAlarmCountdown();
+                startAlarmButton.setText(R.string.start_alarm_button_text);
             }
         });
 
