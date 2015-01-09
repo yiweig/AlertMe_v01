@@ -20,6 +20,8 @@ public class AlertMe extends ActionBarActivity {
     private TextView alarmCountdownText;
     private Button startAlarmButton;
 
+    private Alarm theAlarm;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +32,13 @@ public class AlertMe extends ActionBarActivity {
         alarmCountdownText.setText("Not initialized yet");
 
         startAlarmButton = (Button) findViewById(R.id.start_alarm_button);
-        updateAlarmCountdown();
 
-        final Alarm newAlarm = new Alarm(this, alarmCountdownValue);
+        theAlarm = new Alarm(this, alarmCountdownValue);
 
         startAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                newAlarm.startCountdown();
+                theAlarm.startCountdown();
             }
         });
     }
@@ -88,6 +89,9 @@ public class AlertMe extends ActionBarActivity {
         alarmCountdownValue = Byte.parseByte(alarmCountdownSetting);
 
         alarmCountdownText.setText(alarmCountdownSetting);
+
+        theAlarm.setTime(alarmCountdownValue);
+
 
     }
 }

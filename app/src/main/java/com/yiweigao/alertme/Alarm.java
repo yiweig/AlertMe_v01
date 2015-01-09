@@ -51,5 +51,10 @@ public class Alarm {
 
     }
 
+    public void setTime(byte newTime) {
+        this.countdown = newTime;
+        this.countdownDisplay.setText(Byte.toString(this.countdown));
+    }
+
 
 }
