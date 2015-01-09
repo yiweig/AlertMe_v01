@@ -48,7 +48,7 @@ public class Alarm {
             public void onFinish() {
                 countdownDisplay.setText("done");
 
-                playAlarm();
+                startAlarm();
 
 //                try {
 //                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -78,7 +78,7 @@ public class Alarm {
         this.countdownDisplay.setText(Byte.toString(this.countdown));
     }
 
-    public void playAlarm() {
+    public void startAlarm() {
 
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
                 audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);

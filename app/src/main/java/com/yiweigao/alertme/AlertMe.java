@@ -1,9 +1,13 @@
 package com.yiweigao.alertme;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +28,17 @@ public class AlertMe extends ActionBarActivity {
     private Alarm theAlarm;
 
     private MotionDetector motionDetector;
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("hasMotion");
+
+            if (message.equals("true")) {
+                theAlarm.startAlarm();
+            }
+        }
+    };
 
 
     @Override
@@ -56,20 +71,24 @@ public class AlertMe extends ActionBarActivity {
                 updateAlarmCountdown();
             }
         });
+
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         theAlarm.registerSensorListener();
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
+                new IntentFilter("motionDetected"));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         theAlarm.unregisterSensorListener();
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
     }
 
 

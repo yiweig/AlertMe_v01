@@ -1,10 +1,12 @@
 package com.yiweigao.alertme;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.FloatMath;
 import android.util.Log;
 
@@ -14,6 +16,8 @@ import android.util.Log;
 public class MotionDetector implements SensorEventListener {
 
 //    private Activity activity;
+
+    private Context mainContext;
 
     private SensorManager sensorManager;
     private Sensor accSensor;
@@ -28,8 +32,9 @@ public class MotionDetector implements SensorEventListener {
     private float previousAccel;
 
     public MotionDetector(Context context) {
+        this.mainContext = context;
         this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        this.accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 //        gyroSensor= sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         if (accSensor != null) {
@@ -69,6 +74,12 @@ public class MotionDetector implements SensorEventListener {
             float currentAccel = FloatMath.sqrt(x * x + y * y + z * z);
 //            mAccel = (mAccel * 0.9f) + (mAccelCurrent * 0.1f);
             Log.d("onSensorChanged", Float.toString(currentAccel));
+
+            if (currentAccel > 2.0f) {
+                Intent intent = new Intent("motionDetected");
+                intent.putExtra("hasMotion", "true");
+                LocalBroadcastManager.getInstance(mainContext).sendBroadcast(intent);
+            }
 
             // Shake detection
 //            float x = accValues[0];
