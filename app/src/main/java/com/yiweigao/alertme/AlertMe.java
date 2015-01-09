@@ -61,14 +61,14 @@ public class AlertMe extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        motionDetector.register();
+        theAlarm.registerSensorListener();
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        motionDetector.unregister();
+        theAlarm.unregisterSensorListener();
 
     }
 

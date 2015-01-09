@@ -19,14 +19,16 @@ public class Alarm {
     private Activity activity;
     private AudioManager audioManager;
     private MediaPlayer mediaPlayer;
+    private MotionDetector motionDetector;
 
     public Alarm(Activity mainActivity, byte passedCountdown) {
         this.activity = mainActivity;
         this.countdown = passedCountdown;
-        this.countdownDisplay = (TextView) this.activity.findViewById(R.id.alarm_countdown_text);
-        this.audioManager = (AudioManager) this.activity.getSystemService(Context.AUDIO_SERVICE);
+        this.countdownDisplay = (TextView) mainActivity.findViewById(R.id.alarm_countdown_text);
+        this.audioManager = (AudioManager) mainActivity.getSystemService(Context.AUDIO_SERVICE);
         this.originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        this.mediaPlayer = MediaPlayer.create(this.activity, R.raw.some_nights_fun);
+        this.mediaPlayer = MediaPlayer.create(mainActivity, R.raw.some_nights_fun);
+        this.motionDetector = new MotionDetector(mainActivity.getApplicationContext());
     }
 
     public void startCountdown() {
@@ -87,6 +89,14 @@ public class Alarm {
 
     public void stopAlarm() {
         mediaPlayer.stop();
+    }
+
+    public void registerSensorListener() {
+        motionDetector.register();
+    }
+
+    public void unregisterSensorListener() {
+        motionDetector.unregister();
     }
 
 
