@@ -21,22 +21,13 @@ public class MotionDetector implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor accSensor;
-//    protected Sensor gyroSensor;
 
-//    private float[] accValues;
-//    private float[] gyroValues;
     final float ALPHA = 0.8f;
-    private float xNoise;
-    private float yNoise;
-    private float zNoise;
-    private short numberOfSamples;  // maybe this can be a byte if we don't anticipate more than 127 samples?
 
     private boolean isOn;
     private boolean isCalibrating;
     private boolean hasAcc;
-//    private boolean hasGyro = false;
 
-    private float previousAccel;
     private float[] gravity;
     private float[] linear_acceleration;
 
@@ -44,7 +35,6 @@ public class MotionDetector implements SensorEventListener {
         this.mainContext = context;
         this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-//        gyroSensor= sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         this.isOn = false;
         this.isCalibrating = false;
@@ -52,19 +42,9 @@ public class MotionDetector implements SensorEventListener {
         if (this.accSensor != null) {
             this.hasAcc = true;
         }
-//        if (gyroSensor != null) {
-//            hasGyro = true;
-//        }
-
-        this.xNoise = 0.0f;
-        this.yNoise = 0.0f;
-        this.zNoise = 0.0f;
 
         this.gravity = new float[3];
         this.linear_acceleration = new float[3];
-
-        this.numberOfSamples = 0;
-
     }
 
     public void turnOn() {
@@ -77,7 +57,6 @@ public class MotionDetector implements SensorEventListener {
 
     public void register() {
         sensorManager.registerListener(this, accSensor, SensorManager.SENSOR_DELAY_NORMAL);
-//        sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void unregister() {
@@ -113,7 +92,7 @@ public class MotionDetector implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
-            if (isCalibrating == true) {
+            if (isCalibrating) {
                 calibrate(event);
                 return;
             }
