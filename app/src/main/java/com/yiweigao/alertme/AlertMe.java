@@ -35,7 +35,7 @@ public class AlertMe extends ActionBarActivity {
             String message = intent.getStringExtra("hasMotion");
 
             if (message.equals("true")) {
-                theAlarm.startAlarm();
+                theAlarm.startCountdown();
             }
         }
     };
