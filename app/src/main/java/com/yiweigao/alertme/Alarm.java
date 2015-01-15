@@ -22,7 +22,6 @@ public class Alarm {
     private int countdownSecondsLeft = 0;
     private int timeoutSecondsLeft = 0;
     private TextView countdownDisplay;
-    private Activity activity;
     private AudioManager audioManager;
     private MediaPlayer mediaPlayer;
     private MotionDetector motionDetector;
