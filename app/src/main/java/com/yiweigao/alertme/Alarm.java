@@ -57,7 +57,6 @@ public class Alarm {
 
         // countdown fix from
         // http://stackoverflow.com/a/6811744/1470257
-
         countdownTimer = new CountDownTimer(countdown * 1000, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
